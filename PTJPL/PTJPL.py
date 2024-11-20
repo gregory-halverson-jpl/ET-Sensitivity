@@ -100,6 +100,12 @@ def process_PTJPL(
         # calculate soil evaporation (LEs) from relative surface wetness, soil moisture constraint,
         # priestley taylor coefficient, epsilon = delta / (delta + gamma), net radiation of the soil,
         # and soil heat flux
+        print(f"fwet: {fwet}")
+        print(f"fSM: {fSM}")
+        print(f"PT_alpha: {PT_alpha}")
+        print(f"epsilon: {epsilon}")
+        print(f"Rn_soil: {Rn_soil}")
+        print(f"G: {G}")
         LE_soil = np.clip((fwet + fSM * (1 - fwet)) * PT_alpha * epsilon * (Rn_soil - G), 0, None)
         results["LE_soil"] = LE_soil
 

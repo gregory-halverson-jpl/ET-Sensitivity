@@ -6,6 +6,7 @@ from dateutil import parser
 from pandas import DataFrame
 from STIC import process_STIC_array
 from STIC.STIC import MAX_ITERATIONS, USE_VARIABLE_ALPHA
+from SEBAL import calculate_soil_heat_flux
 
 import rasters as rt
 from rasters import Point
@@ -80,12 +81,17 @@ def process_STIC_table(
     Ta_C = np.float64(np.array(input_df.Ta_C))
     RH = np.float64(np.array(input_df.RH))
     Rn = np.float64(np.array(input_df.Rn))
-    Rg = np.float64(np.array(input_df.Rg))
+    # Rg = np.float64(np.array(input_df.Rg))
 
     if "G" in input_df:
         G = np.array(input_df.G)
     else:
-        G = None
+        G = calculate_soil_heat_flux(
+            Rn=Rn,
+            ST_C=ST_C,
+            NDVI=NDVI,
+            albedo=albedo
+        )
     
     results = process_STIC_array(
         hour_of_day=hour_of_day,

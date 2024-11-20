@@ -118,7 +118,9 @@ def sensitivity_analysis(
             input_perturbation_std = np.array(run_results[(run_results.input_variable == input_variable) & (run_results.output_variable == output_variable)].input_perturbation_std).astype(np.float32)
             output_perturbation_std = np.array(run_results[(run_results.output_variable == output_variable) & (run_results.output_variable == output_variable)].output_perturbation_std).astype(np.float32)
             # correlation = np.corrcoef(input_perturbation_std, output_perturbation_std)[0][1]
-            correlation = scipy.stats.pearsonr(input_perturbation_std, output_perturbation_std)[0]
+            
+            mask = ~np.isnan(input_perturbation_std) & ~np.isnan(output_perturbation_std)
+            correlation = scipy.stats.pearsonr(input_perturbation_std[mask], output_perturbation_std[mask])[0]
             
             sensitivity_metrics_df = pd.concat([sensitivity_metrics_df, pd.DataFrame([[
                 input_variable, 
@@ -127,7 +129,7 @@ def sensitivity_analysis(
                 correlation
             ]], columns=sensitivity_metrics_columns)])
 
-            r2 = scipy.stats.linregress(input_perturbation_std, output_perturbation_std)[2] ** 2
+            r2 = scipy.stats.linregress(input_perturbation_std[mask], output_perturbation_std[mask])[2] ** 2
 
             sensitivity_metrics_df = pd.concat([sensitivity_metrics_df, pd.DataFrame([[
                 input_variable, 
